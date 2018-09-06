@@ -8,6 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 @RestController
 public class StudentResource {
@@ -46,6 +47,17 @@ public class StudentResource {
                 .toUri();
 
         return ResponseEntity.created(location).build();
+    }
+
+    @PutMapping("/students/{id}")
+    public ResponseEntity<Object> updateStudent(@RequestBody Student student, @PathVariable long id){
+        Optional<Student> studentOptional=studentRepository.findById(id);
+        if(!studentOptional.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        student.setId(id);
+        studentRepository.save(student);
+        return ResponseEntity.noContent().build();
     }
 
 }
